@@ -1,0 +1,39 @@
+[package]
+name = "semiavidpr-experiments"
+version = "0.1.0"
+edition = "2021"
+authors = ["Joachim Neu <jneu@stanford.edu>"]
+publish = false
+
+
+[dependencies]
+rand = { version = "0.8", features = [ "std", "std_rng" ] }
+itertools = "0.10.3"
+clap = { version = "3.0.14", features = ["derive"] }
+# ark-std = { version = "0.3.0", features = [ "print-trace" ] }
+ark-std = "0.3.0"
+ark-ff = "0.3.0"
+ark-ec = "0.3.0"
+ark-bls12-381 = "0.3.0"
+ark-bn254 = "0.3.0"
+ark-poly = "0.3.0"
+ark-poly-commit = "0.3.0"
+
+
+[dev-dependencies]
+criterion = "0.3"
+
+
+[[bench]]
+name = "dispersal"
+harness = false
+
+
+[lib]
+name = "semiavidpr"
+path = "src/lib.rs"
+
+
+[[bin]]
+name = "semiavidpr-experiments"
+path = "src/main.rs"
