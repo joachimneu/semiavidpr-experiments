@@ -234,13 +234,27 @@ impl<E: PairingEngine> SemiAvidPr<'_, E> {
 
 
     pub fn retrieve_verify_chunks(&self, column_commitments: &Vec<E::G1Affine>, data_coded_downloaded: &Vec<Vec<E::Fr>>, idxs_download_nodes: &Vec<usize>) -> bool {
+        let timer_all = start_timer!(|| "Verifying downloaded chunks");
+
+        let timer_encode_commitments = start_timer!(|| "'Encoding' of column commitments to coded chunk commitments");
+        let mut column_commitments_projective: Vec<E::G1Projective> = column_commitments.iter().map(|h| h.clone().into()).collect();
+        column_commitments_projective.resize(self.domain_encoding.size(), E::G1Projective::zero());
+        self.domain_encoding.fft_in_place(&mut column_commitments_projective);
+        let coded_chunk_commitments_affine: Vec<E::G1Affine> = column_commitments_projective.iter().map(|h| h.into_affine()).collect();
+        end_timer!(timer_encode_commitments);
+
         let timer_outer = start_timer!(|| "Checking downloaded coded columns");
         for (idx, col) in idxs_download_nodes.iter().enumerate() {
             let timer_inner = start_timer!(|| format!("Column {}", idx));
 
             let commitment = self.commit_column(&data_coded_downloaded, idx);
-            let commitment_check = self.encode_commitments(&column_commitments, *col);
-            if commitment != commitment_check {
+
+            // let commitment_check = self.encode_commitments(&column_commitments, *col);
+            // if commitment != commitment_check {
+            //     return false;
+            // }
+
+            if commitment != coded_chunk_commitments_affine[*col] {
                 return false;
             }
 
@@ -248,6 +262,7 @@ impl<E: PairingEngine> SemiAvidPr<'_, E> {
         }
         end_timer!(timer_outer);
 
+        end_timer!(timer_all);
         true
     }
     

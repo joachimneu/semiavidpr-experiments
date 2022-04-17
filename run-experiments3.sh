@@ -8,7 +8,7 @@ for RATE in "33"; do
 done
 
 
-ITERATIONS=1
+ITERATIONS=5
 EXPERIMENTBIN="./target/release/semiavidpr-experiments"
 export RAYON_NUM_THREADS=1
 export RUST_BACKTRACE=1
