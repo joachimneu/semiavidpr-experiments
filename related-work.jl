@@ -84,8 +84,8 @@ function semiavidpr(n, t, F)
     # communication = n * (F/k + k*κ_commit + κ_sig)   # (ignoring signatures)
     # client sends to each storage node their chunk + column commitments
     communication = n * (F/k + k*κ_commit)
-    # nodes store their chunks + column commitments
-    storage = n * (F/k + k*κ_hash)
+    # nodes store their chunks + column commitments (for retrieving client)
+    storage = n * (F/k + k*κ_commit)
 
     return (communication, storage)
 end
@@ -100,8 +100,8 @@ t_033 = round(0.33*n)
 @show avid(n, t_033, F)
 @show avid_fp(n, t_033, F)
 @show avid_m(n, t_033, F)
-@show aced(n, t_033, F; c=48e3)
-@show aced(n, t_049, F; c=48e3)
+@show aced(n, t_033, F; c=40e3)
+@show aced(n, t_049, F; c=40e3)
 @show semiavidpr(n, t_033, F)
 @show semiavidpr(n, t_049, F)
 
